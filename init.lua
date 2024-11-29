@@ -39,7 +39,7 @@ local plugins = {
   'nvim-tree/nvim-web-devicons',
    lazy = true
   },
-   { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' },
+   { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
   {
     "jose-elias-alvarez/null-ls.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -99,6 +99,11 @@ local plugins = {
 
       -- Configura Pyright per Python
       lspconfig.pyright.setup{}
+      lspconfig.clangd.setup({
+        cmd = { "clangd" },
+        filetypes = {"c","cpp"},
+      })
+      
     end
   },
   {
@@ -368,6 +373,7 @@ vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
 
 require("nvim-treesitter.configs").setup {
   ensure_installed = { "python", "lua", "javascript","c" }, -- Inserisci i linguaggi che usi
+  auto_install = true,
   highlight = {
     enable = true,                -- Abilita evidenziazione sintattica
     additional_vim_regex_highlighting = false, -- Disabilita l'uso della sintassi Vim standard

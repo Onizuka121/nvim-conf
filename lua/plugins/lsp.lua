@@ -5,5 +5,9 @@ return function()
 
     -- Aggiungi le capacità di completamento a pyright
     lspconfig.pyright.setup{}
+    lspconfig.clangd.setup({
+      cmd = { "clangd" },
+      filetypes = {"c","cpp"},
+    })
     -- Puoi aggiungere qui altre configurazioni per server LSP
 end
