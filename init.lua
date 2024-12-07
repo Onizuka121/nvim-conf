@@ -20,11 +20,19 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 local plugins = {
-  { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false, priority = 1000 },
+  -- { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false, priority = 1000 },
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.8', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' }
   },
-  
+  {
+  "folke/tokyonight.nvim",
+  lazy = false,
+  priority = 1000,
+  opts = {
+     transparent = true,
+  },
+  },
+  --{ "bluz71/vim-nightfly-colors", name = "nightfly", lazy = false, priority = 1000 },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -70,7 +78,7 @@ local plugins = {
   'stevearc/conform.nvim',
   opts = {},
   },
-  { "EdenEast/nightfox.nvim" }, 
+  --{ "EdenEast/nightfox.nvim" }, 
   {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
@@ -381,6 +389,7 @@ require("nvim-treesitter.configs").setup {
 }
 
 -- Default options
+--[[
 require('nightfox').setup({
   options = {
     -- Compiled file's destination location
@@ -392,16 +401,16 @@ require('nightfox').setup({
     module_default = true,   -- Default enable value for modules
     colorblind = {
       enable = true,        -- Enable colorblind support
-      simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
+      simulate_only = true, -- Only show simulated colorblind colors and not diff shifted
       severity = {
         protan = 0,          -- Severity [0,1] for protan (red)
         deutan = 0,          -- Severity [0,1] for deutan (green)
-        tritan = 0,          -- Severity [0,1] for tritan (blue)
+        tritan = 1,          -- Severity [0,1] for tritan (blue)
       },
     },
     styles = {               -- Style to be applied to different syntax groups
       comments = "italic",     -- Value is any valid attr-list value `:help attr-list`
-      conditionals = "NONE",
+      conditionals = "italic",
       constants = "NONE",
       functions = "italic",
       keywords = "bold",
@@ -442,9 +451,9 @@ require('nightfox').setup({
   specs = {},
   groups = {},
 })
-
+--]]
 -- setup must be called before loading
-vim.cmd("colorscheme nightfox")
+vim.cmd("colorscheme tokyonight-night")
 
 
 
