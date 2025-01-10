@@ -4,6 +4,8 @@ vim.cmd("set tabstop=2")
 vim.cmd("set softtabstop=2")
 vim.cmd("set shiftwidth=2")
 vim.opt.guicursor = "n-v-c:block,i:hor20"  
+vim.opt.linespace = 0  -- Riduce lo spazio tra le linee
+vim.opt.cmdheight = 1  -- Riduce l'altezza della barra dei comandi
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -21,6 +23,25 @@ end
 vim.opt.rtp:prepend(lazypath)
 local plugins = {
   -- { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false, priority = 1000 },
+  { 
+    'fedepujol/move.nvim',
+    opts = {
+        line = {
+		enable = true, -- Enables line movement
+		indent = true  -- Toggles indentation
+	},
+	block = {
+		enable = true, -- Enables block movement
+		indent = true  -- Toggles indentation
+	},
+	word = {
+		enable = true, -- Enables word movement
+	},
+	char = {
+		enable = false -- Enables char movement
+	}
+    }
+  },
   {
     'nvim-telescope/telescope.nvim', tag = '0.1.8', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' }
   },
@@ -30,6 +51,10 @@ local plugins = {
   priority = 1000,
   opts = {
      transparent = true,
+      styles = {
+      sidebars = "transparent",  -- Trasparenza per le barre laterali (ad esempio, NvimTree)
+      floats = "transparent",    -- Trasparenza per le finestre fluttuanti (ad esempio, LSP hover)
+    },
   },
   },
   --{ "bluz71/vim-nightfly-colors", name = "nightfly", lazy = false, priority = 1000 },
@@ -155,12 +180,16 @@ require("bufferline").setup{}
 
 local builtin = require("telescope.builtin")
 
+
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'auto',
-    component_separators = { left = '', right = ''},
-    section_separators = { left = '', right = ''},
+    theme = 'palenight',
+    globalstatus = true,
+    transparent = true,
+    component_separators = { left = '', right = '|'},
+    section_separators = { left = '', right = '|'},
     disabled_filetypes = {
       statusline = {},
       winbar = {},
@@ -366,8 +395,23 @@ vim.keymap.set("n","<C-p>", builtin.find_files, {})
 vim.keymap.set("n","<C-b>" ,":Neotree filesystem reveal left<CR>")
 vim.keymap.set("n","<C-l>",":Neotree reveal close<CR>")
 vim.keymap.set("n","<C-x>",":x<CR>")
-vim.keymap.set("n","<C-s>",":w")
+vim.keymap.set("n","<C-s>",":w<CR>")
+vim.keymap.set("n","<Tab>",":bnext<CR>")
+vim.keymap.set("n","<S-Tab>",":bprev<CR>")
+local opts = { noremap = true, silent = true }
+-- Normal-mode commands
+vim.keymap.set('n', '<A-j>', ':MoveLine(1)<CR>', opts)
+vim.keymap.set('n', '<A-k>', ':MoveLine(-1)<CR>', opts)
+vim.keymap.set('n', '<A-h>', ':MoveHChar(-1)<CR>', opts)
+vim.keymap.set('n', '<A-l>', ':MoveHChar(1)<CR>', opts)
+vim.keymap.set('n', '<A-Up>', ':MoveWord(1)<CR>', opts)
+vim.keymap.set('n', '<A-wb>', ':MoveWord(-1)<CR>', opts)
 
+-- Visual-mode commands
+vim.keymap.set('v', '<A-j>', ':MoveBlock(1)<CR>', opts)
+vim.keymap.set('v', '<A-k>', ':MoveBlock(-1)<CR>', opts)
+vim.keymap.set('v', '<A-h>', ':MoveHBlock(-1)<CR>', opts)
+vim.keymap.set('v', '<A-l>', ':MoveHBlock(1)<CR>', opts)
 
 vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
   pattern = "*",
