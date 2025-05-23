@@ -7,6 +7,7 @@ vim.opt.guicursor = "n-v-c:block,i:hor20"
 vim.opt.linespace = 0  -- Riduce lo spazio tra le linee
 vim.opt.cmdheight = 1  -- Riduce l'altezza della barra dei comandi
 
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
