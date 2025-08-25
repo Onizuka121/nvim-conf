@@ -18,6 +18,7 @@ return function()
         }),
         sources = cmp.config.sources({
             { name = "nvim_lsp" },
+            { name = "latex_symbols" },
             { name = "luasnip" },
         }, {
             { name = "buffer" },

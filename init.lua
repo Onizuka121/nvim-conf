@@ -8,6 +8,7 @@ vim.opt.linespace = 0  -- Riduce lo spazio tra le linee
 vim.opt.cmdheight = 1  -- Riduce l'altezza della barra dei comandi
 
 
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -23,7 +24,20 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 local plugins = {
-  -- { "bluz71/vim-moonfly-colors", name = "moonfly", lazy = false, priority = 1000 },
+{
+  'Pocco81/auto-save.nvim',
+  config = function()
+    require("auto-save").setup({
+      enabled = true,
+      trigger_events = {"TextChanged", "TextChangedI"}, -- anche in insert
+      condition = function()
+        return vim.bo.modifiable and not vim.bo.readonly
+      end,
+      clean_command_line = true,
+      debounce_delay = 500,
+    })
+  end,
+},
   { 
     'fedepujol/move.nvim',
     opts = {
@@ -44,6 +58,9 @@ local plugins = {
     }
   },
   {
+"kdheepak/cmp-latex-symbols",
+  },
+  {
     'nvim-telescope/telescope.nvim', tag = '0.1.8', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' }
   },
   {
@@ -58,7 +75,6 @@ local plugins = {
     },
   },
   },
-  --{ "bluz71/vim-nightfly-colors", name = "nightfly", lazy = false, priority = 1000 },
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -163,6 +179,18 @@ vim.api.nvim_create_user_command("LazyUpdate", function()
 local opts = {}
 
 require("lazy").setup(plugins,opts)
+
+require("luasnip.loaders.from_lua").lazy_load({
+  paths = "~/.config/nvim/snippets"
+})
+
+
+snippet = {
+  expand = function(args)
+    require("luasnip").lsp_expand(args.body)
+  end,
+},
+
 
 require('neo-tree').setup {
   filesystem = {
@@ -392,6 +420,7 @@ require("dressing").setup({
 })
 
 
+vim.api.nvim_set_keymap("n", "<leader>n", ":ASToggle<CR>", {})
 vim.keymap.set("n","<C-p>", builtin.find_files, {})
 vim.keymap.set("n","<C-b>" ,":Neotree filesystem reveal left<CR>")
 vim.keymap.set("n","<C-l>",":Neotree reveal close<CR>")
@@ -413,15 +442,6 @@ vim.keymap.set('v', '<A-j>', ':MoveBlock(1)<CR>', opts)
 vim.keymap.set('v', '<A-k>', ':MoveBlock(-1)<CR>', opts)
 vim.keymap.set('v', '<A-h>', ':MoveHBlock(-1)<CR>', opts)
 vim.keymap.set('v', '<A-l>', ':MoveHBlock(1)<CR>', opts)
-
-vim.api.nvim_create_autocmd({"InsertLeave", "TextChanged"}, {
-  pattern = "*",
-  callback = function()
-    if vim.bo.modifiable and not vim.bo.readonly then
-      vim.cmd("silent! write")  -- Salva il buffer corrente
-    end
-  end,
-})
 
 
 require("nvim-treesitter.configs").setup {
@@ -519,12 +539,5 @@ require("conform").setup({
   },
 })
 
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*",
-  callback = function(args)
-    require("conform").format({ bufnr = args.buf })
-  end,
-})
 
 
